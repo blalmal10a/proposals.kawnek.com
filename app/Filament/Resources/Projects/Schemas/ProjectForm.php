@@ -3,10 +3,14 @@
 namespace App\Filament\Resources\Projects\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Alignment;
 
 class ProjectForm
 {
@@ -22,6 +26,40 @@ class ProjectForm
                     ->columnSpanFull(),
                 DatePicker::make('initiated_at'),
                 DatePicker::make('abandoned_at'),
+                Repeater::make('feature_groups')
+                    ->label('Features')
+                    ->itemLabel(fn($state) => $state['title'])
+                    ->relationship()
+                    ->schema([
+                        TextInput::make("title"),
+                        Repeater::make('features')
+                            ->relationship()
+                            ->orderColumn('sort')
+                            ->collapsed()
+                            ->schema([
+                                TextInput::make('name'),
+                                Textarea::make('description'),
+                                TextInput::make('cost'),
+                                TextInput::make('yearly_cost'),
+                                TextInput::make('monthly_cost'),
+
+                                Grid::make()
+                                    ->schema([
+                                        Toggle::make('is_selected')
+                                            ->inline(false),
+                                        Toggle::make('is_required')
+                                            ->inline(false),
+                                    ])
+
+                            ])
+                            ->columnSpanFull()
+                            ->columns(2)
+                    ])
+                    ->columnSpanFull()
+                    ->collapsed()
+                    ->orderColumn('sort')
+                    ->live()
+                    ->addActionAlignment(Alignment::Start)
             ]);
     }
 }
