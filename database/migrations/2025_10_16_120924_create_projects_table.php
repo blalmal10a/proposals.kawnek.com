@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('initiated_at')->nullable();
             $table->date('abandoned_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

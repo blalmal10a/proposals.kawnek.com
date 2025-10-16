@@ -35,6 +35,7 @@ return new class extends Migration
             $table->decimal('monthly_cost', 16, 2)->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
