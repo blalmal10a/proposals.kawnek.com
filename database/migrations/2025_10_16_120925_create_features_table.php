@@ -26,8 +26,8 @@ return new class extends Migration
             $table->boolean('is_required')->default(false);
 
             // Using json for storing arrays of related feature IDs
-            $table->array('required_feature_ids')->nullable();
-            $table->array('dependant_feature_ids')->nullable();
+            $table->json('required_feature_ids')->nullable();
+            $table->json('dependant_feature_ids')->nullable();
 
             // Cost fields
             $table->decimal('cost', 16, 2)->nullable();
