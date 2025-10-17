@@ -22,4 +22,9 @@ class EditProject extends EditRecord
             RestoreAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return route('filament.admin.resources.projects.index');
+    }
 }

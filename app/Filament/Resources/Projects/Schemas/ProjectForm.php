@@ -31,18 +31,21 @@ class ProjectForm
                     ->itemLabel(fn($state) => $state['title'])
                     ->relationship()
                     ->schema([
-                        TextInput::make("title"),
+                        TextInput::make("title")->required(),
                         Repeater::make('features')
+                            ->itemLabel(fn($state) => $state['name'])
                             ->relationship()
                             ->orderColumn('sort')
                             ->collapsed()
                             ->schema([
-                                TextInput::make('name'),
+                                TextInput::make('name')
+                                    ->required(),
                                 Textarea::make('description'),
-                                TextInput::make('cost'),
+                                TextInput::make('cost')
+                                    ->required()
+                                    ->numeric(),
                                 TextInput::make('yearly_cost'),
                                 TextInput::make('monthly_cost'),
-
                                 Grid::make()
                                     ->schema([
                                         Toggle::make('is_selected')
@@ -50,7 +53,6 @@ class ProjectForm
                                         Toggle::make('is_required')
                                             ->inline(false),
                                     ])
-
                             ])
                             ->columnSpanFull()
                             ->columns(2)
