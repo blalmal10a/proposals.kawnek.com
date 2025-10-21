@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
+use App\Models\Feature;
+use App\Models\Project;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -39,6 +41,22 @@ class ProjectForm
                                 ->columnSpanFull(),
                             DatePicker::make('initiated_at'),
                             DatePicker::make('abandoned_at'),
+
+                            KeyValue::make('feature_list')
+                                ->dehydrated(false)
+                                ->afterStateHydrated(function ($get, $set, $record) {
+                                    $featureGroups = $record->feature_groups ?? [];
+                                    $featureList = [];
+                                    foreach ($featureGroups as $index => $featureGroup) {
+                                        $features = $featureGroup['features'];
+                                        foreach ($features as $featureIndex => $feature) {
+                                            // logger($feature['uuid'] . ' - ' . $feature['name']);
+                                            $featureList[$feature['uuid']] = $feature['name'];
+                                        }
+                                    }
+                                    $set('feature_list', $featureList);
+                                })
+                                ->live(),
                             Repeater::make('feature_groups')
                                 ->label('Features')
                                 ->itemLabel(fn($state) => $state['title'])
@@ -83,21 +101,36 @@ class ProjectForm
                                                 ->afterStateHydrated(function ($state, $set) {
                                                     if (!$state) {
                                                         $uid = (string) Str::uuid7();
+                                                        logger($uid); // Optional logging
                                                         $set('uuid', $uid);
                                                     }
                                                 }),
-                                            // Select::make('required_feature_ids')
-
-                                            //     ->preload(false)
-                                            // //
-                                            // ,
+                                            CheckboxList::make('required_feature_ids')
+                                                ->label('Required Feature')
+                                                ->options(function ($get) {
+                                                    $featureList = $get('../../../../feature_list') ?? [];
+                                                    return $featureList;
+                                                })
+                                            //
+                                            ,
                                             Grid::make()
                                                 ->schema([
                                                     Toggle::make('is_selected')
                                                         ->inline(false),
                                                     Toggle::make('is_required')
                                                         ->inline(false),
-                                                ]),
+
+                                                ])
+                                                ->afterStateHydrated(function ($get, $set) {
+                                                    if (!$get('uuid')) {
+                                                        $uid = (string) Str::uuid7();
+                                                        logger('generate uuid is: ' . $uid);
+                                                        $set('uuid', $uid);
+                                                    }
+                                                })
+                                                ->live()
+                                            //
+                                            ,
                                             // Action::make('hehe')
                                             //     ->action(function ($get, $set, $state) {
                                             //         // logger($get('../../feature_groups'));
@@ -120,61 +153,62 @@ class ProjectForm
                                 ->orderColumn('sort')
                                 ->live()
                                 ->addActionAlignment(Alignment::Start),
-                            KeyValue::make('feature_list')
-
-                                ->afterStateHydrated(function ($get, $set) {
-                                    $featureGroups = $get('feature_groups');
-                                    $featureList = [];
-                                    foreach ($featureGroups as $index => $featureGroup) {
-                                        $features = $featureGroup['features'];
-                                        foreach ($features as $featureIndex => $feature) {
-                                            // logger($feature['uuid'] . ' - ' . $feature['name']);
-                                            $featureList[$feature['uuid']] = $feature['name'];
-                                        }
-                                    }
-                                    $set('feature_list', $featureList);
-                                })
                         ]),
                     //
-                    Step::make('Prject dependencies')
-                        ->schema([
-                            //
-                            Repeater::make('feature_groups')
-                                ->label('Features')
-                                ->itemLabel(fn($state) => $state['title'])
-                                ->relationship()
-                                ->schema([
-                                    Repeater::make('features')
-                                        ->itemLabel(fn($state) => $state['name'])
-                                        ->relationship()
-                                        ->orderColumn('sort')
-                                        ->schema([
-                                            CheckboxList::make('required_feature_ids')
-                                                ->options(function ($get, $livewire) {
+                    // Step::make('Prject dependencies')
+                    //     ->schema([
+                    //         KeyValue::make('feature_list')
+                    //             ->afterStateHydrated(function ($state) {
+                    //                 logger('feature list is: ', $state);
+                    //             })
+                    //         //
+                    //         ,
+                    //         //
+                    //         Repeater::make('feature_groups')
+                    //             ->label('Features')
+                    //             ->itemLabel(fn($state) => $state['title'])
+                    //             ->relationship()
+                    //             ->schema([
+                    //                 Repeater::make('features')
+                    //                     ->itemLabel(fn($state) => $state['name'])
+                    //                     ->relationship()
+                    //                     ->orderColumn('sort')
+                    //                     ->schema([
+                    //                         Select::make('required_feature_ids')
+                    //                             ->label('Required Feature')
+                    //                             ->multiple()
+                    //                             ->searchable()
+                    //                             ->options([])
+                    //                             ->getSearchResultsUsing(function (string $search, $get, $livewire) {
+                    //                                 $formData = $livewire->form->getState();
+                    //                                 $featureList = $formData['feature_list'] ?? [];
+                    //                                 return array_filter($featureList, function ($feature) use ($search) {
+                    //                                     return str_contains(strtolower($feature), strtolower($search));
+                    //                                 });
+                    //                             })
+                    //                             ->getOptionLabelUsing(function ($values) {
+                    //                                 logger($values);
+                    //                                 return [];
+                    //                             })
+                    //                         //
+                    //                         ,
+                    //                         Action::make('nothing')
+                    //                             ->action(function ($get) {
+                    //                                 logger($get('../../feature_list'));
+                    //                             })
 
-                                                    $formData = $livewire->form->getState();
-                                                    logger($formData);
-                                                    return [];
-                                                })
-                                            //     ->options([
-                                            //         function ($livewire) {
-                                            //             $formData = $livewire->form->getState();
-                                            //             logger($formData);
-                                            //             return [];
-                                            //         }
-                                            //     ]),
-                                        ])
-                                        ->columnSpan(3)
-                                        ->columns(2)
-                                ])
-                                ->columns(4)
-                                ->columnSpanFull()
-                                // ->collapsed()
-                                ->orderColumn('sort')
-                                ->live()
-                                ->addActionAlignment(Alignment::Start),
+                    //                     ])
+                    //                     ->columnSpan(3)
+                    //                     ->columns(2)
+                    //             ])
+                    //             ->columns(4)
+                    //             ->columnSpanFull()
+                    //             // ->collapsed()
+                    //             ->orderColumn('sort')
+                    //             ->live()
+                    //             ->addActionAlignment(Alignment::Start),
 
-                        ])
+                    //     ])
                 ])
                     ->columnSpanFull()
             ]);
