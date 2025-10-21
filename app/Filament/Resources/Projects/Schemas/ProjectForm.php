@@ -51,7 +51,7 @@ class ProjectForm
                                         $features = $featureGroup['features'];
                                         foreach ($features as $featureIndex => $feature) {
                                             // logger($feature['uuid'] . ' - ' . $feature['name']);
-                                            $featureList[$feature['uuid']] = $feature['name'];
+                                            $featureList[$feature['uuid']] = $feature['name'] . " [" . $featureGroup['title'] . "]";
                                         }
                                     }
                                     $set('feature_list', $featureList);
@@ -69,13 +69,12 @@ class ProjectForm
                                         ->orderColumn('sort')
                                         ->schema([
                                             TextInput::make('name')
-                                                ->afterStateUpdated(function ($get) {
-                                                    $featureGroups = $get('../../feature_groups');
-                                                    logger($featureGroups);
+                                                ->afterStateUpdated(function ($get, $state) {
+                                                    $featureGroups = $get('../../../../feature_list');
+                                                    $uuid = $get('uuid');
+                                                    $featureGroups[$uuid] = $state;
                                                 })
-                                                ->afterStateHydrated(function ($get) {
-                                                    $featureGroups = $get('../../feature_groups');
-                                                })
+                                                ->live(onBlur: true)
                                                 ->required(),
                                             Textarea::make('description'),
                                             TextInput::make('cost')
@@ -105,8 +104,9 @@ class ProjectForm
                                                         $set('uuid', $uid);
                                                     }
                                                 }),
-                                            CheckboxList::make('required_feature_ids')
-                                                ->label('Required Feature')
+                                            Select::make('required_feature_ids')
+                                                ->label(fn($get) => 'Required Feature for ' . $get('name'))
+                                                ->multiple()
                                                 ->options(function ($get) {
                                                     $featureList = $get('../../../../feature_list') ?? [];
                                                     return $featureList;
