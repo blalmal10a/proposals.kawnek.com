@@ -3,5 +3,6 @@
 return [
     App\Providers\AppServiceProvider::class,
     App\Providers\Filament\AdminPanelProvider::class,
-    OwenIt\Auditing\AuditingServiceProvider::class,
+    App\Providers\Filament\SelectFeaturePanelProvider::class,
+    // OwenIt\Auditing\AuditingServiceProvider::class,
 ];
