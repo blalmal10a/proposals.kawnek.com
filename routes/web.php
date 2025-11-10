@@ -10,3 +10,4 @@ Route::get('user-morph-one-image', [UserController::class, 'morph_one'])->name('
 Route::get('images/{id}', [ImageController::class, 'getMedia']);
 
 Route::redirect('redirect-login', '/admin/login')->name('login');
+Route::view('holiday-palace-proposal', 'proposal');
