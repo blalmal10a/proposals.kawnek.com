@@ -26,6 +26,8 @@ class FeatureGroupResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Schema $schema): Schema
     {
         return FeatureGroupForm::configure($schema);

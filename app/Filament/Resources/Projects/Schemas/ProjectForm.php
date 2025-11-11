@@ -35,6 +35,12 @@ class ProjectForm
                 Grid::make()
                     ->schema([
                         Section::make('summary')
+                            ->afterHeader([
+                                Action::make('View In select project')
+                                    ->url(function ($record) {
+                                        return route('filament.selectFeature.resources.projects.edit', $record);
+                                    })
+                            ])
                             ->schema([
                                 TextInput::make('name')
                                     ->required(),
@@ -68,7 +74,6 @@ class ProjectForm
                             ]),
                         Section::make('Features')
                             ->schema([
-
                                 Repeater::make('feature_groups')
                                     ->label('Features')
                                     ->itemLabel(fn($state) => $state['title'])
@@ -147,10 +152,10 @@ class ProjectForm
                                                     })
                                                     ->live()
                                             ])
-                                            ->columnSpan(3)
-                                            ->columns(2)
+                                        // ->columnSpan(3)
+                                        // ->columns(2)
                                     ])
-                                    ->columns(4)
+                                    // ->columns(4)
                                     ->columnSpanFull()
                                     // ->collapsed()
                                     ->orderColumn('sort')
