@@ -8,8 +8,10 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Text;
 
 class ProjectForm
 {
@@ -17,72 +19,103 @@ class ProjectForm
     {
         return $schema
             ->components([
-                Section::make('summary')
-                    ->schema([
-                        TextInput::make('name')
-                            ->required(),
-                        RichEditor::make('description')
-                            ->disabled()
-                            ->columnSpanFull(),
-                        // TextInput::make('client_name')
-                        //     ->required(),
-                        // DatePicker::make('initiated_at'),
-                        // DatePicker::make('abandoned_at'),
-                    ])
-                    ->columnSpanFull(),
-                Repeater::make('feature_groups')
-                    ->live()
-                    ->label('Features')
-                    ->relationship()
-                    ->schema([
-                        Repeater::make('features')
-                            ->label(function ($record) {
-                                return $record->title;
-                            })
-                            ->relationship()
-                            ->schema([
-                                TextInput::make('name')
-                                    ->readOnly(),
-
-                                TextInput::make('cost')
-                                    ->hidden(function ($record) {
-                                        return !$record->cost;
-                                    })
-                                    ->readOnly(),
-                                TextInput::make('yearly_cost')
-                                    ->hidden(function ($record) {
-                                        return !$record->yearly_cost;
-                                    })
-                                    ->readOnly(),
-                                Checkbox::make('is_selected')
-                                    ->disabled(function ($record, $get, $set) {
-                                        if ($record->is_required) return true;
-                                        $feature_groups = $get('../../../../feature_groups');
-                                        $featureList = [];
-                                        foreach ($feature_groups as $groupKey => $feature_group) {
-                                            foreach ($feature_group['features'] as $featureKey => $feature) {
-                                                $featureList[$feature['uuid']] = [
-                                                    'required_ids' => $feature['required_feature_ids'],
-                                                    'is_selected' => $feature['is_selected'],
-                                                ];
-                                            }
-                                        }
-                                        $shouldDisable = ProjectForm::disable($record->required_feature_ids, $featureList);
-                                        if ($shouldDisable) {
-                                            $set('is_selected', false);
-                                            return true;
-                                        }
-                                    })
-                                    ->inline(false)
-
-                            ])
-                            ->columns(3)
-                            ->columnSpanFull()
-                    ])
+                Grid::make()
                     ->columnSpanFull()
+                    ->schema([
+                        Section::make('summary')
+                            ->schema([
+                                Section::make('summary')
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->required(),
+                                        RichEditor::make('description')
+                                            ->disabled()
+                                            ->columnSpanFull(),
+                                        Text::make(function ($get) {
+                                            $feature_groups = $get('feature_groups');
+                                            return ProjectForm::calculateTotalCost($feature_groups);
+                                        })
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
+                        Section::make('featuresasdf')
+                            ->hiddenLabel()
+                            ->schema([
+                                Repeater::make('feature_groups')
+                                    ->addable(false)
+                                    ->deletable(false)
+                                    ->live()
+                                    ->hiddenLabel()
+                                    // ->label('Features')
+                                    ->relationship()
+                                    ->schema([
+                                        Repeater::make('features')
+                                            ->label(function ($record) {
+                                                return $record->title;
+                                            })
+                                            ->addable(false)
+                                            ->deletable(false)
+                                            ->relationship()
+                                            ->schema([
+                                                TextInput::make('name')
+                                                    ->readOnly(),
+
+                                                TextInput::make('cost')
+                                                    ->hidden(function ($record) {
+                                                        return !$record->cost;
+                                                    })
+                                                    ->readOnly(),
+                                                TextInput::make('yearly_cost')
+                                                    ->hidden(function ($record) {
+                                                        return !$record->yearly_cost;
+                                                    })
+                                                    ->readOnly(),
+                                                Checkbox::make('is_selected')
+                                                    ->disabled(function ($record, $get, $set) {
+                                                        if ($record->is_required) return true;
+                                                        $feature_groups = $get('../../../../feature_groups');
+                                                        $featureList = [];
+                                                        foreach ($feature_groups as $groupKey => $feature_group) {
+                                                            foreach ($feature_group['features'] as $featureKey => $feature) {
+                                                                $featureList[$feature['uuid']] = [
+                                                                    'required_ids' => $feature['required_feature_ids'],
+                                                                    'is_selected' => $feature['is_selected'],
+                                                                ];
+                                                            }
+                                                        }
+                                                        $shouldDisable = ProjectForm::disable($record->required_feature_ids, $featureList);
+                                                        if ($shouldDisable) {
+                                                            $set('is_selected', false);
+                                                            return true;
+                                                        }
+                                                    })
+                                                    ->afterStateUpdated(function ($get, $set) {
+                                                        //
+                                                        $feature_groups = $get('../../../../feature_groups');
+                                                        ProjectForm::calculateTotalCost($feature_groups);
+                                                    })
+                                                    ->inline(false)
+
+                                            ])
+                                            ->columns(3)
+                                            ->columnSpanFull()
+                                    ])
+                                    ->columnSpanFull()
+                            ])
+                    ])
             ]);
     }
-
+    public static function calculateTotalCost($feature_groups)
+    {
+        $total = 0;
+        foreach ($feature_groups as $groupKey => $feature_group) {
+            foreach ($feature_group['features'] as $featureKey => $feature) {
+                if ($feature['is_selected'])
+                    $total += $feature['cost'];
+            }
+        }
+        return $total;
+    }
     public static function disable($required_feature_ids, $featureList = [])
     {
         // loop over the array of required feature UUIDs

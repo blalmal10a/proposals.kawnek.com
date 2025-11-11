@@ -26,6 +26,7 @@ class ProjectResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+
     public static function form(Schema $schema): Schema
     {
         return ProjectForm::configure($schema);

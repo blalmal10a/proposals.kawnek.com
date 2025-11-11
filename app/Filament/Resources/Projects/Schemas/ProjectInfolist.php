@@ -44,12 +44,6 @@ class ProjectInfolist
                     ])
                     ->columnSpanFull()
                     ->columns(2)
-                // TextEntry::make('updated_at')
-                //     ->dateTime()
-                //     ->placeholder('-'),
-                // TextEntry::make('deleted_at')
-                //     ->dateTime()
-                //     ->visible(fn (Project $record): bool => $record->trashed()),
             ]);
     }
 }
