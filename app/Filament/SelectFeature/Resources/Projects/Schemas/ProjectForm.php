@@ -2,6 +2,7 @@
 
 namespace App\Filament\SelectFeature\Resources\Projects\Schemas;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
@@ -23,25 +24,31 @@ class ProjectForm
                 Grid::make()
                     ->columnSpanFull()
                     ->schema([
-                        Section::make('summary')
+                        Grid::make()
                             ->schema([
-                                Section::make('summary')
-                                    ->schema([
-                                        TextInput::make('name')
-                                            ->required(),
-                                        RichEditor::make('description')
-                                            ->disabled()
-                                            ->columnSpanFull(),
-                                        Text::make(function ($get) {
-                                            $feature_groups = $get('feature_groups');
-                                            $amount = ProjectForm::calculateTotalCost($feature_groups);
-                                            return "TOTAL AMOUNT: ₹" . number_format($amount, 2);
-                                        })
-                                    ])
+                                TextInput::make('name')
+                                    ->required(),
+                                Action::make('Edit project')
+                                    ->hidden(function ($record) {
+                                        return !Auth::check();
+                                    })
+                                    ->url(function ($record) {
+                                        if ($record && Auth::check()) {
+                                            return route('filament.admin.resources.projects.edit', $record);
+                                        }
+                                    })
+                                //
+                                ,
+                                RichEditor::make('description')
+                                    ->disabled()
                                     ->columnSpanFull(),
+                                Text::make(function ($get) {
+                                    $feature_groups = $get('feature_groups');
+                                    $amount = ProjectForm::calculateTotalCost($feature_groups);
+                                    return "TOTAL AMOUNT: ₹" . number_format($amount, 2);
+                                })
                             ]),
-                        Section::make('featuresasdf')
-                            ->hiddenLabel()
+                        Grid::make()
                             ->schema([
                                 Repeater::make('feature_groups')
                                     ->addable(false)
