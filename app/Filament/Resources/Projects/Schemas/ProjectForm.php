@@ -2,10 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
-use App\Models\Feature;
-use App\Models\Project;
 use Filament\Actions\Action;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\KeyValue;
@@ -18,11 +15,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
-use Filament\Schemas\Components\Wizard;
-use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class ProjectForm
@@ -56,10 +50,23 @@ class ProjectForm
                                     ->columnSpanFull(),
                                 DatePicker::make('initiated_at'),
                                 DatePicker::make('abandoned_at'),
-
-                                Text::make(function ($get) {
+                                TextInput::make('total_cost'),
+                                TextInput::make('discount_percent'),
+                                TextInput::make('discount_amount')
+                                    ->live(
+                                        onBlur: true
+                                    )
+                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                        $total_cost = $get('total_cost');
+                                        $discount_amount = $state;
+                                        $discount_percent = ($discount_amount / $total_cost) * 100;
+                                        $discount_percent = number_format($discount_percent, 2, '.', null);
+                                        $set('discount_percent', $discount_percent);
+                                    }),
+                                Text::make(function ($get, $set) {
                                     $feature_groups = $get('feature_groups');
                                     $amount = ProjectForm::calculateTotalCost($feature_groups);
+                                    $set('total_cost', $amount);
                                     return "TOTAL AMOUNT: ₹" . number_format($amount, 2);
                                 }),
                                 KeyValue::make('feature_list')
@@ -158,12 +165,8 @@ class ProjectForm
                                                     })
                                                     ->live()
                                             ])
-                                        // ->columnSpan(3)
-                                        // ->columns(2)
                                     ])
-                                    // ->columns(4)
                                     ->columnSpanFull()
-                                    // ->collapsed()
                                     ->orderColumn('sort')
                                     ->live()
                                     ->addActionAlignment(Alignment::Start),
