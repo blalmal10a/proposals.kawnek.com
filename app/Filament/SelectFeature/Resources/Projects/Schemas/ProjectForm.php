@@ -53,7 +53,7 @@ class ProjectForm
                                     ->schema([
                                         Repeater::make('features')
                                             ->label(function ($record) {
-                                                return $record->title;
+                                                return $record?->title;
                                             })
                                             ->addable(false)
                                             ->deletable(false)
@@ -66,21 +66,24 @@ class ProjectForm
 
                                                 TextInput::make('cost')
                                                     ->hidden(function ($record) {
-                                                        return !$record->cost;
+                                                        return !$record?->cost;
                                                     })
                                                     ->readOnly(function () {
                                                         return !Auth::check();
                                                     }),
                                                 TextInput::make('yearly_cost')
                                                     ->hidden(function ($record) {
-                                                        return !$record->yearly_cost;
+                                                        return !$record?->yearly_cost;
                                                     })
                                                     ->readOnly(function () {
                                                         return !Auth::check();
                                                     }),
                                                 Checkbox::make('is_selected')
                                                     ->disabled(function ($record, $get, $set) {
-                                                        if ($record->is_required) return true;
+                                                        if (!$record?->id) {
+                                                            return false;
+                                                        }
+                                                        if ($record?->is_required) return true;
                                                         $feature_groups = $get('../../../../feature_groups');
                                                         $featureList = [];
                                                         foreach ($feature_groups as $groupKey => $feature_group) {
@@ -91,7 +94,7 @@ class ProjectForm
                                                                 ];
                                                             }
                                                         }
-                                                        $shouldDisable = ProjectForm::disable($record->required_feature_ids, $featureList);
+                                                        $shouldDisable = ProjectForm::disable($record?->required_feature_ids, $featureList);
                                                         if ($shouldDisable) {
                                                             $set('is_selected', false);
                                                             return true;

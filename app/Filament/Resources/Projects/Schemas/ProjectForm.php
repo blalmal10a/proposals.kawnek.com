@@ -37,8 +37,14 @@ class ProjectForm
                         Section::make('summary')
                             ->afterHeader([
                                 Action::make('View In select project')
+                                    ->hidden(function ($record) {
+                                        if (!$record) {
+                                            return true;
+                                        }
+                                    })
                                     ->url(function ($record) {
-                                        return route('filament.selectFeature.resources.projects.edit', $record);
+                                        if ($record)
+                                            return route('filament.selectFeature.resources.projects.edit', $record);
                                     })
                             ])
                             ->schema([
