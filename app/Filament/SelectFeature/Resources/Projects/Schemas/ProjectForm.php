@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Text;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectForm
 {
@@ -33,7 +34,8 @@ class ProjectForm
                                             ->columnSpanFull(),
                                         Text::make(function ($get) {
                                             $feature_groups = $get('feature_groups');
-                                            return ProjectForm::calculateTotalCost($feature_groups);
+                                            $amount = ProjectForm::calculateTotalCost($feature_groups);
+                                            return "TOTAL AMOUNT: ₹" . number_format($amount, 2);
                                         })
                                     ])
                                     ->columnSpanFull(),
@@ -58,18 +60,24 @@ class ProjectForm
                                             ->relationship()
                                             ->schema([
                                                 TextInput::make('name')
-                                                    ->readOnly(),
+                                                    ->readOnly(function () {
+                                                        return !Auth::check();
+                                                    }),
 
                                                 TextInput::make('cost')
                                                     ->hidden(function ($record) {
                                                         return !$record->cost;
                                                     })
-                                                    ->readOnly(),
+                                                    ->readOnly(function () {
+                                                        return !Auth::check();
+                                                    }),
                                                 TextInput::make('yearly_cost')
                                                     ->hidden(function ($record) {
                                                         return !$record->yearly_cost;
                                                     })
-                                                    ->readOnly(),
+                                                    ->readOnly(function () {
+                                                        return !Auth::check();
+                                                    }),
                                                 Checkbox::make('is_selected')
                                                     ->disabled(function ($record, $get, $set) {
                                                         if ($record->is_required) return true;
@@ -88,11 +96,6 @@ class ProjectForm
                                                             $set('is_selected', false);
                                                             return true;
                                                         }
-                                                    })
-                                                    ->afterStateUpdated(function ($get, $set) {
-                                                        //
-                                                        $feature_groups = $get('../../../../feature_groups');
-                                                        ProjectForm::calculateTotalCost($feature_groups);
                                                     })
                                                     ->inline(false)
 
