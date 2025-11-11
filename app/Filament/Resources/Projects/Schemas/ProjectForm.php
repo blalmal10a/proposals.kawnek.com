@@ -51,7 +51,9 @@ class ProjectForm
                                 DatePicker::make('initiated_at'),
                                 DatePicker::make('abandoned_at'),
                                 TextInput::make('total_cost'),
-                                TextInput::make('discount_percent'),
+                                TextInput::make('discount_percent')
+                                    ->disabled()
+                                    ->numeric(),
                                 TextInput::make('discount_amount')
                                     ->live(
                                         onBlur: true
