@@ -109,50 +109,59 @@
                             <div class="mt-4">
                                 @foreach ($project->feature_groups as $groupKey => $feature_group)
                                     <div>
-                                        <h2 class="text-2xl font-semibold">
+                                        <h2 class="text-2xl font-semibold capitalize">
                                             {{ $feature_group->title }}
                                         </h2>
                                         @foreach ($feature_group->features as $featureKey => $feature)
-                                            <div class="my-2 pl-4">
+                                            {{-- @if ($feature->is_selected) --}}
+                                            <div class="my-2 pl-4 {{ $feature->is_selected ? '' : 'line-through' }}">
                                                 <h6 class="text-lg underline uppercase">
                                                     {{ $feature->name }}
                                                 </h6>
-                                                <div class="pl-4">
-                                                    {!! nl2br($feature->description) !!}
-                                                </div>
+                                                @if ($feature->is_selected)
+                                                    <div class="pl-4">
+                                                        {!! nl2br($feature->description) !!}
+                                                    </div>
+                                                @endif
                                             </div>
+                                            {{-- @endif --}}
                                         @endforeach
                                     </div>
                                 @endforeach
                             </div>
                             <div style="" id="price-summary">
-                                <h2 class="text-2xl font-semibold mt-12">
+                                <h2 class="text-2xl font-semibold mt-12 capitalize">
                                     Development cost of the software
                                 </h2>
                                 <div class="mt-4 pl-4">
                                     <div class="gap-2 grid grid-cols-2">
                                         @foreach ($project->feature_groups as $groupKey => $feature_group)
                                             @foreach ($feature_group->features as $featureKey => $feature)
-                                                <div class="">
-                                                    {{ $feature->name }}
-                                                </div>
-                                                <div>
-                                                    ₹ {{ number_format($feature->cost, 2) }}
-                                                </div>
+                                                @if ($feature->is_selected)
+                                                    <div class="capitalize">
+                                                        {{ $feature->name }}
+                                                    </div>
+                                                    <div>
+                                                        ₹ {{ number_format($feature->cost, 2) }}
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         @endforeach
-                                        <div class="font-semibold">
-                                            Sub total:
-                                        </div>
-                                        <div class="font-semibold">
-                                            ₹{{ number_format($project->total_cost, 2) }}
-                                        </div>
-                                        <div class="text-red-500 mt-2">
-                                            Discount ({{ $project->discount_percent }}%)
-                                        </div>
-                                        <div class="text-red-500 line-through mt-2">
-                                            ₹{{ number_format($project->discount_amount, 2) }}
-                                        </div>
+                                        @if ($project->discount)
+                                            <div class="font-semibold">
+                                                Sub total:
+                                            </div>
+                                            <div class="font-semibold">
+                                                ₹{{ number_format($project->total_cost, 2) }}
+                                            </div>
+
+                                            <div class="text-red-500 mt-2">
+                                                Discount ({{ $project->discount_percent }}%)
+                                            </div>
+                                            <div class="text-red-500 line-through mt-2">
+                                                ₹{{ number_format($project->discount_amount, 2) }}
+                                            </div>
+                                        @endif
 
                                         <div class="font-bold">
                                             GRAND TOTAL
@@ -162,7 +171,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h2 class="text-2xl font-semibold mt-12">Post deployment
+                                <h2 class="text-2xl font-semibold capitalize mt-12">Post deployment
                                 </h2>
 
                                 <div>
