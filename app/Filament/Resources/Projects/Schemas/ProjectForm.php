@@ -65,7 +65,7 @@ class ProjectForm
                                     }),
                                 Text::make(function ($get, $set) {
                                     $feature_groups = $get('feature_groups');
-                                    $amount = ProjectForm::calculateTotalCost($feature_groups);
+                                    $amount = ProjectForm::calculateTotalCost($feature_groups, $get, $set);
                                     $set('total_cost', $amount);
                                     return "TOTAL AMOUNT: ₹" . number_format($amount, 2);
                                 }),
@@ -104,13 +104,13 @@ class ProjectForm
                                                         $uuid = $get('uuid');
                                                         $featureGroups[$uuid] = $state;
                                                     })
-                                                    ->live(onBlur: true)
                                                     ->required(),
                                                 Textarea::make('description'),
                                                 TextInput::make('cost')
                                                     ->required(function ($state, $get) {
                                                         return !$get('yearly_cost') && !$get('monthly_cost');
                                                     })
+                                                    ->live(onBlur: true)
                                                     ->numeric(),
                                                 Toggle::make('is_recurring')
                                                     ->dehydrated(false)
@@ -159,16 +159,15 @@ class ProjectForm
                                                     ->afterStateHydrated(function ($get, $set) {
                                                         if (!$get('uuid')) {
                                                             $uid = (string) Str::uuid7();
-                                                            logger('generate uuid is: ' . $uid);
                                                             $set('uuid', $uid);
                                                         }
                                                     })
-                                                    ->live()
+                                                // ->live(onBlur: true)
                                             ])
                                     ])
                                     ->columnSpanFull()
                                     ->orderColumn('sort')
-                                    ->live()
+                                    ->live(onBlur: true)
                                     ->addActionAlignment(Alignment::Start),
                             ])
                     ])
@@ -176,7 +175,7 @@ class ProjectForm
             ]);
     }
 
-    public static function calculateTotalCost($feature_groups)
+    public static function calculateTotalCost($feature_groups, $get, $set)
     {
         $total = 0;
         foreach ($feature_groups as $groupKey => $feature_group) {
@@ -185,6 +184,12 @@ class ProjectForm
                     $total += $feature['cost'];
             }
         }
+        $total_cost = $total;
+        $discount_amount = $get('discount_amount');
+        $discount_percent = ($discount_amount / $total_cost) * 100;
+        $discount_percent = number_format($discount_percent, 2, '.', null);
+        $set('discount_percent', $discount_percent);
+        //
         return $total;
     }
 }
