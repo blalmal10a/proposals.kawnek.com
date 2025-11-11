@@ -118,6 +118,11 @@ class ProjectForm
                                                     Toggle::make('is_selected')
                                                         ->inline(false),
                                                     Toggle::make('is_required')
+                                                        ->afterStateUpdated(function ($state, $set) {
+                                                            if ($state) {
+                                                                $set('is_selected', $state);
+                                                            }
+                                                        })
                                                         ->inline(false),
 
                                                 ])
