@@ -28,7 +28,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            //
+            $table->dropColumn('total_cost');
+            $table->dropColumn('discount_percent');
+            $table->dropColumn('discount_amount');
+        });
+        Schema::table('features', function (Blueprint $table) {
+            $table->dropColumn('discount_percent');
+            $table->dropColumn('discount_amount');
         });
     }
 };
