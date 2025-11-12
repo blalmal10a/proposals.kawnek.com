@@ -147,7 +147,7 @@
                                                 @endif
                                             @endforeach
                                         @endforeach
-                                        @if ($project->discount)
+                                        @if ($project->discount_amount)
                                             <div class="font-semibold">
                                                 Sub total:
                                             </div>
