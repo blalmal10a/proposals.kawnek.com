@@ -27,7 +27,7 @@ class SelectFeaturePanelProvider extends PanelProvider
             ->id('selectFeature')
             ->path('select-feature')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Rose,
             ])
             ->discoverResources(in: app_path('Filament/SelectFeature/Resources'), for: 'App\Filament\SelectFeature\Resources')
             ->discoverPages(in: app_path('Filament/SelectFeature/Pages'), for: 'App\Filament\SelectFeature\Pages')

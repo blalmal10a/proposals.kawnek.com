@@ -1,4 +1,23 @@
 <div class="">
+    <div
+        class="m-auto fixed top-0 h-42 print:hidden"
+        style="width: 100%;   z-index: 200;"
+    >
+        <div
+            class="relative h-full  m-auto"
+            style="width: 210mm;"
+        >
+            <div class="absolute bottom-0 right-0">
+                <x-filament::button
+                    href="{{ route('filament.selectFeature.resources.projects.edit', $project) }}"
+                    tag="a"
+                    color="rose"
+                >
+                    Edit selection
+                </x-filament::button>
+            </div>
+        </div>
+    </div>
     <style>
         html {
             margin: 0;
@@ -58,7 +77,7 @@
 
     <table class="m-auto w-[210mm]">
         <thead id="header">
-            <tr>
+            <tr class="relative">
                 <th>
                     <div class="p-4 mb-8 text-white border-b-2 bg-neutral-900 border-b-neutral-900">
                         <div class="flex justify-between">
@@ -111,7 +130,11 @@
                         id="body"
                         class="px-4 pb-8"
                     >
-                        <div id="mvp">
+                        <div
+                            id="mvp"
+                            class="relative"
+                        >
+
                             <h1 class="text-3xl font-bold text-center uppercase">
                                 {{ $project->name }} PROPOSAL
                             </h1>

@@ -44,6 +44,9 @@ class ProjectsTable
             ->filters([
                 TrashedFilter::make(),
             ])
+            ->recordUrl(function ($record) {
+                return route('filament.admin.resources.projects.edit', $record);
+            })
             ->recordActions([
                 ViewAction::make()
                     ->url(fn($record) => route('proposal', [
