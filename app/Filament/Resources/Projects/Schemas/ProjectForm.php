@@ -46,13 +46,16 @@ class ProjectForm
                                     ->required(),
                                 TextInput::make('client_name')
                                     ->required(),
+                                TextInput::make('client_designation'),
+                                TextInput::make('client_org'),
                                 RichEditor::make('description')
                                     ->columnSpanFull(),
                                 DatePicker::make('initiated_at'),
                                 DatePicker::make('abandoned_at'),
                                 TextInput::make('total_cost'),
                                 TextInput::make('discount_percent')
-                                    ->disabled()
+                                    ->dehydrated(true)
+                                    ->readOnly()
                                     ->numeric(),
                                 TextInput::make('discount_amount')
                                     ->live(

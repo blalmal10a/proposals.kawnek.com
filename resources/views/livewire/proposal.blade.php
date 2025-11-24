@@ -64,8 +64,11 @@
                         <div class="flex justify-between">
                             <div>
                                 <div class="w-32 ">
-                                    <img src="/assets/images/kawnek-enterprise-logo-crop.png" alt=""
-                                        srcset="">
+                                    <img
+                                        src="/assets/images/kawnek-enterprise-logo-crop.png"
+                                        alt=""
+                                        srcset=""
+                                    >
                                 </div>
                             </div>
                             <div class=" text-end">
@@ -81,7 +84,10 @@
                         </div>
                         <div class="flex justify-between">
                             <div class="text-blue-500 textitalic">
-                                <a href="http://kawnek.com" target="_blank">kawnek.com</a>
+                                <a
+                                    href="http://kawnek.com"
+                                    target="_blank"
+                                >kawnek.com</a>
                             </div>
                             <div class="italic text-blue-500">
                                 <a href="tel:+919996244310">+91 99962 44310</a>
@@ -101,66 +107,72 @@
         <tbody>
             <tr>
                 <td>
-                    <section id="body" class="px-4 pb-8">
+                    <section
+                        id="body"
+                        class="px-4 pb-8"
+                    >
                         <div id="mvp">
                             <h1 class="text-3xl font-bold text-center uppercase">
                                 {{ $project->name }} PROPOSAL
                             </h1>
                             <div class="mt-4">
                                 @foreach ($project->feature_groups as $groupKey => $feature_group)
-                                    <div>
-                                        <h2 class="text-2xl font-semibold capitalize">
-                                            {{ $feature_group->title }}
-                                        </h2>
-                                        @foreach ($feature_group->features as $featureKey => $feature)
-                                            {{-- @if ($feature->is_selected) --}}
-                                            <div class="my-2 pl-4 {{ $feature->is_selected ? '' : 'line-through' }}">
-                                                <h6 class="text-lg underline uppercase">
-                                                    {{ $feature->name }}
-                                                </h6>
-                                                @if ($feature->is_selected)
-                                                    <div class="pl-4">
-                                                        {!! nl2br($feature->description) !!}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            {{-- @endif --}}
-                                        @endforeach
+                                <div class="break-inside-avoid">
+                                    <h2 class="text-2xl font-semibold capitalize">
+                                        {{ $feature_group->title }}
+                                    </h2>
+                                    @foreach ($feature_group->features as $featureKey => $feature)
+                                    {{-- @if ($feature->is_selected) --}}
+                                    <div class="my-2 pl-4 {{ $feature->is_selected ? '' : 'line-through' }}">
+                                        <h6 class="text-lg underline uppercase">
+                                            {{ $feature->name }}
+                                        </h6>
+                                        @if ($feature->is_selected)
+                                        <div class="pl-4">
+                                            {!! nl2br($feature->description) !!}
+                                        </div>
+                                        @endif
                                     </div>
+                                    {{-- @endif --}}
+                                    @endforeach
+                                </div>
                                 @endforeach
                             </div>
-                            <div style="" id="price-summary">
+                            <div
+                                style=""
+                                id="price-summary"
+                            >
                                 <h2 class="text-2xl font-semibold mt-12 capitalize">
                                     Development cost of the software
                                 </h2>
                                 <div class="mt-4 pl-4">
                                     <div class="gap-2 grid grid-cols-2">
                                         @foreach ($project->feature_groups as $groupKey => $feature_group)
-                                            @foreach ($feature_group->features as $featureKey => $feature)
-                                                @if ($feature->is_selected)
-                                                    <div class="capitalize">
-                                                        {{ $feature->name }}
-                                                    </div>
-                                                    <div>
-                                                        ₹ {{ number_format($feature->cost, 2) }}
-                                                    </div>
-                                                @endif
-                                            @endforeach
+                                        @foreach ($feature_group->features as $featureKey => $feature)
+                                        @if ($feature->is_selected)
+                                        <div class="capitalize">
+                                            {{ $feature->name }}
+                                        </div>
+                                        <div>
+                                            ₹ {{ number_format($feature->cost, 2) }}
+                                        </div>
+                                        @endif
                                         @endforeach
-                                        @if ($project->discount_amount)
-                                            <div class="font-semibold">
-                                                Sub total:
-                                            </div>
-                                            <div class="font-semibold">
-                                                ₹{{ number_format($project->total_cost, 2) }}
-                                            </div>
+                                        @endforeach
+                                        @if ($project->discount_amount > 0)
+                                        <div class="font-semibold">
+                                            Sub total:
+                                        </div>
+                                        <div class="font-semibold">
+                                            ₹{{ number_format($project->total_cost, 2) }}
+                                        </div>
 
-                                            <div class="text-red-500 mt-2">
-                                                Discount ({{ $project->discount_percent }}%)
-                                            </div>
-                                            <div class="text-red-500 line-through mt-2">
-                                                ₹{{ number_format($project->discount_amount, 2) }}
-                                            </div>
+                                        <div class="text-red-500 mt-2">
+                                            Discount ({{ $project->discount_percent }}%)
+                                        </div>
+                                        <div class="text-red-500 line-through mt-2">
+                                            ₹{{ number_format($project->discount_amount, 2) }}
+                                        </div>
                                         @endif
 
                                         <div class="font-bold">
@@ -189,12 +201,15 @@
                                 <div>
                                     <div style="display: inline-block; width: 250px; padding: 4px">Domain fees:
                                     </div>
-                                    <div style="display: inline-block; padding: 4px" class="relative">
+                                    <div
+                                        style="display: inline-block; padding: 4px"
+                                        class="relative"
+                                    >
                                         ₹{{ number_format(1550, 2) }}
                                         per year
                                     </div>
                                 </div>
-                                <div class="mt-8">
+                                <div class="mt-8 break-inside-avoid">
                                     <h2 class="text-2xl">Terms and conditions</h2>
                                     <ul>
                                         <li> -
@@ -256,8 +271,10 @@
                                             <div class="font-bold uppercase">
                                                 {{ $project->client_name }}
                                             </div>
-                                            <i>Proprietor,</i>
-                                            <i class="font-bold">Khiangte Pampered Hands</i>
+                                            <i>{{$project->client_designation}}@if($project->client_org), @endif</i>
+                                            <i class="font-bold">
+                                                {{$project->client_org}}
+                                            </i>
                                         </div>
                                     </div>
 
@@ -273,7 +290,10 @@
         </tbody>
     </table>
 
-    <div class="w-[210mm] m-auto flex justify-between p-4 bg-neutral-200" id="footer">
+    <div
+        class="w-[210mm] m-auto flex justify-between p-4 bg-neutral-200"
+        id="footer"
+    >
         <strong>
             GSTIN: 15AYKPL0160C1ZX
         </strong>

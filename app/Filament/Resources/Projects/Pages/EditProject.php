@@ -8,6 +8,7 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Str;
 
 class EditProject extends EditRecord
 {
@@ -26,5 +27,10 @@ class EditProject extends EditRecord
     protected function getRedirectUrl(): string
     {
         return route('filament.admin.resources.projects.index');
+    }
+    public function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['name_slug'] = Str::slug($data['name']);
+        return $data;
     }
 }

@@ -33,6 +33,7 @@ class ProjectResource extends Resource
 
     public static function canViewAny(): bool
     {
+        return true;
         return Auth::check();
     }
     public static function form(Schema $schema): Schema
