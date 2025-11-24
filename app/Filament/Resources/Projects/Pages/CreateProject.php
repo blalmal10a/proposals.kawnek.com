@@ -9,15 +9,15 @@ use Illuminate\Support\Str;
 class CreateProject extends CreateRecord
 {
     protected static string $resource = ProjectResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return route('filament.admin.resources.projects.index');
+    }
 
     public function mutateFormDataBeforeCreate(array $data): array
     {
         $data['name_slug'] = Str::slug($data['name']);
         return $data;
     }
-
-    protected function getRedirectUrl(): string
-    {
-        return route('filament.admin.resources.projects.index');
-    }
+    public static bool $formActionsAreSticky = true;
 }

@@ -8,4 +8,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateProject extends CreateRecord
 {
     protected static string $resource = ProjectResource::class;
+
+    public static bool $formActionsAreSticky = true;
 }

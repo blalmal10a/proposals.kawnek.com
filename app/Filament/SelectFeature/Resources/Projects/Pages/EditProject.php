@@ -29,4 +29,5 @@ class EditProject extends EditRecord
         $data['name_slug'] = Str::slug($data['name']);
         return $data;
     }
+    public static bool $formActionsAreSticky = true;
 }
