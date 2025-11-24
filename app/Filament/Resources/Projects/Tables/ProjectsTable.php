@@ -45,7 +45,10 @@ class ProjectsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->url(fn($record) => route('proposal', [
+                        'project' => $record->name_slug ?? '',
+                    ]), true),
                 EditAction::make(),
             ])
             ->toolbarActions([

@@ -11,5 +11,5 @@ Route::get('user-morph-one-image', [UserController::class, 'morph_one'])->name('
 Route::get('images/{id}', [ImageController::class, 'getMedia']);
 
 Route::redirect('redirect-login', '/admin/login')->name('login');
-Route::get('proposal/{project}', Proposal::class);
+Route::get('proposal/{project}', Proposal::class)->name('proposal');
 Route::view('holiday-palace-proposal', 'holiday-palace-proposal');
