@@ -227,7 +227,7 @@
                                             Any additional features will affect the cost of the software.
                                         </li>
                                         <li> -
-                                            The software (with features defined above) should be delivered within 4
+                                            The software (with features defined above) should be delivered within 12
                                             weeks from the date of confirmation.
                                         </li>
                                         <li> -
@@ -244,7 +244,7 @@
                                         </li>
                                         <li> -
                                             The client has the right to withdraw the initial deposit if the software
-                                            is not delivered within 4 weeks, if no additional feature is added.
+                                            is not delivered within 12 weeks, if no additional feature is added.
                                         </li>
                                     </ul>
                                 </div>
