@@ -44,6 +44,9 @@ class ProjectForm
                             ->schema([
                                 TextInput::make('name')
                                     ->required(),
+                                TextInput::make('phone')
+                                    ->length(10)
+                                    ->required(),
                                 TextInput::make('client_name')
                                     ->required(),
                                 TextInput::make('client_designation'),

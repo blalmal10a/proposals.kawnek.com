@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\SelectFeature\Pages\HomePage;
+use App\Livewire\LandingPage;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -25,14 +27,16 @@ class SelectFeaturePanelProvider extends PanelProvider
     {
         return $panel
             ->id('selectFeature')
-            ->path('select-feature')
+            ->path('')
             ->colors([
                 'primary' => Color::Rose,
             ])
+            ->globalSearch(false)
             ->discoverResources(in: app_path('Filament/SelectFeature/Resources'), for: 'App\Filament\SelectFeature\Resources')
             ->discoverPages(in: app_path('Filament/SelectFeature/Pages'), for: 'App\Filament\SelectFeature\Pages')
             ->pages([
-                Dashboard::class,
+                // Dashboard::class,
+                HomePage::class
             ])
             ->discoverWidgets(in: app_path('Filament/SelectFeature/Widgets'), for: 'App\Filament\SelectFeature\Widgets')
             ->widgets([
