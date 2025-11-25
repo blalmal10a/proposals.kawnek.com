@@ -23,7 +23,10 @@ class EditProject extends EditRecord
             RestoreAction::make(),
         ];
     }
-
+    protected function getRedirectUrl(): string
+    {
+        return route('proposal', ['project' => $this->record]);
+    }
     public function mutateFormDataBeforeSave(array $data): array
     {
         $data['name_slug'] = Str::slug($data['name']);
