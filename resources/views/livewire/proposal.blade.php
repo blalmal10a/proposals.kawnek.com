@@ -29,6 +29,7 @@
         }
 
         #header {
+            z-index: 2000;
             position: sticky;
             top: 0;
         }
