@@ -46,4 +46,10 @@
         </x-slot>
     </x-filament::empty-state>
     @endforelse
+    <div
+        class=""
+        style="position: fixed; bottom: 0; right: 0;"
+    >
+        <a href="/admin">&copy</a> {{ now()->year }} Kawnek Enterprise
+    </div>
 </x-filament-panels::page>

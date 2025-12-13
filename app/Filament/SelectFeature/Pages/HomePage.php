@@ -12,7 +12,7 @@ class HomePage extends Page
     protected string $view = 'filament.select-feature.pages.home-page';
     protected static ?string $title = "Home";
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-home';
-
+    protected static ?string $slug = '/';
     protected function getViewData(): array
     {
         $request = request();
